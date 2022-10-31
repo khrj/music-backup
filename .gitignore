@@ -1,8 +1,8 @@
 # Virtual environment
-venv/
+__pycache__
 
 # Credentials
 .cache
 
 # Backup
-backup.json
+backup

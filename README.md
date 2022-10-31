@@ -1,49 +1,42 @@
 # Spotify backup
 
-Backup spotify liked songs to transfer them to a different account
+Backup spotify liked songs and playlists to transfer them to a different account
+
+> **NOTE: Restoring only restores liked songs, WIP for playlist restore**
 
 Features:
 
-* Keeps order of liked songs
+-   Keeps order of liked songs
+-   Backs up playlists
 
-> Note: Until spotify approves an application for this app's client ID,
-> you will have to use your own client ID, which you can generate by going
-> to https://developer.spotify.com/dashboard/applications and then substitute
-> into the beginning of the appropriate script
+> Note: Until spotify approves an application for this app's client ID, you will
+> have to use your own client ID, which you can generate by going to
+> https://developer.spotify.com/dashboard/applications, and then substituting
+> into the beginning of main.py
 
-## Backup
+## Usage
 
-Run
+Install dependencies:
 
-```bash
-python scripts/backup.py
+```
+poetry install
 ```
 
-## Restore
-
-**Time taken:** 1 second per song
-
-Run
+Then run:
 
 ```bash
-python scripts/restore.py
+poetry run python scripts/main.py
 ```
 
-## Quick restore
+## Time taken
 
-**Note: This will not preserve the order of backed up liked songs**  
-**Time taken:** Nearly instantaneous
+-   Backup: 1 second for every ~120 songs
+-   Restore: 1 second per song
+-   Quick restore (loss of order): Nearly instantaneous
+-   Clean library: Nearly instantaneous
 
-Run
 
-```bash
-python scripts/quick_restore.py
-```
+## Backwards compatibility
 
-## Clean library
-
-Run
-
-```bash
-python scripts/clean_library.py
-```
+If you have an old `backup.json`, rename it to `liked-songs.json` and place it
+under a new directory, `backup`
