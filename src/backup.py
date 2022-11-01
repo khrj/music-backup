@@ -9,9 +9,7 @@ def get_useful_info_for_tracks(tracks):
     return [
         {
             "name": item["track"]["name"],
-            "artists": list(
-                map(lambda artist: artist["name"], item["track"]["artists"])
-            ),
+            "artists": [artist["name"] for artist in item["track"]["artists"]],
             "id": item["track"]["id"],
             "isrc": item["track"]["external_ids"]["isrc"],
             "added_at": item["added_at"],
@@ -27,7 +25,13 @@ def get_useful_info_for_playlists(playlists, owner_id):
 
         playlist_type = None
 
-        if playlist["owner"]["id"] == owner_id:
+        if playlist["owner"]["id"] == owner_id or (
+            playlist["owner"]["id"] == "spotify"
+            and (
+                playlist["name"].lower().startswith("your top songs")
+                or "for you" in playlist["name"].lower()
+            )
+        ):
             playlist_type = "owned"
         elif playlist["collaborative"] is True:
             playlist_type = "collaborative"

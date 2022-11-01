@@ -42,9 +42,11 @@ else:
 choice = input(
     """What would you like to do? Available:
 1. Backup
-2. Quick restore (doesn't preserve order) - nearly instantaneous
-3. Restore (preserves order) - 1 song per second
+2. Quick restore (doesn't preserve order of liked songs)
+3. Restore (preserves order of liked songs)
 4. [DANGEROUS] Clean library
+
+Note that while quick restore loses order for liked songs, playlists are always ordered correctly.
 
 [1/2/3/4/q]: """
 )

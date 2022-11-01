@@ -2,12 +2,12 @@
 
 Backup spotify liked songs and playlists to transfer them to a different account
 
-> **NOTE: Restoring only restores liked songs, WIP for playlist restore**
-
 Features:
 
 -   Keeps order of liked songs
--   Backs up playlists
+-   Backs up followed, collaborative and created playlists
+    -   Re-follows playlists on restore
+    -   Recreates collaborative and created playlists
 
 > Note: Until spotify approves an application for this app's client ID, you will
 > have to use your own client ID, which you can generate by going to
@@ -30,11 +30,15 @@ poetry run python src/main.py
 
 ## Time taken
 
--   Backup: 1 second for every ~120 songs
--   Restore: 1 second per song
--   Quick restore (loss of order): Nearly instantaneous
--   Clean library: Nearly instantaneous
+> **Quick restore causes liked songs to lose order. Playlists are always ordered
+> correctly.**
 
+-   Backup: 1 second for every ~120 songs
+-   Restore: 1 second per liked song, 1 second for every ~120 songs within
+    playlists
+-   Quick restore: 1 second for every ~120 songs
+-   Clean library: 1 second for every ~120 liked songs, 1 second for every 2-3
+    playlists
 
 ## Backwards compatibility
 
