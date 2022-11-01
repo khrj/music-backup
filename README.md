@@ -25,7 +25,7 @@ poetry install
 Then run:
 
 ```bash
-poetry run python scripts/main.py
+poetry run python src/main.py
 ```
 
 ## Time taken
