@@ -64,6 +64,16 @@ def get_useful_info_for_albums(albums):
     ]
 
 
+def get_useful_info_for_followed(artists):
+    return [
+        {
+            "name": artist["name"],
+            "id": artist["id"],
+        }
+        for artist in artists
+    ]
+
+
 def get_all_items(sp, results):
     items = results["items"]
 
@@ -89,6 +99,11 @@ def get_albums(sp):
     return get_useful_info_for_albums(albums)
 
 
+def get_followed_artists(sp):
+    artists = get_all_items(sp, sp.current_user_followed_artists(limit=50)["artists"])
+    return get_useful_info_for_followed(artists)
+
+
 def get_playlist_tracks(sp, playlist):
     tracks = get_all_items(sp, sp.playlist_tracks(playlist["id"], limit=50))
     return get_useful_info_for_tracks(tracks)
@@ -111,12 +126,20 @@ def backup(sp):
     Path("backup/playlists/collaborative").mkdir(parents=True, exist_ok=True)
     Path("backup/playlists/followed").mkdir(parents=True, exist_ok=True)
 
+    print("Backing up liked songs...")
     songs = get_liked_songs(sp)
-    albums = get_albums(sp)
-    playlists = get_playlists(sp)
-
     dump(songs, open("backup/liked-songs.json", "w"))
+
+    print("Backing up albums...")
+    albums = get_albums(sp)
     dump(albums, open("backup/saved-albums.json", "w"))
+
+    print("Backing up followed artists...")
+    followed = get_followed_artists(sp)
+    dump(followed, open("backup/followed-artists.json", "w"))
+
+    print("Backing up playlists...")
+    playlists = get_playlists(sp)
     for playlist in playlists:
         playlist["tracks"] = get_playlist_tracks(sp, playlist)
         dump(
@@ -129,6 +152,8 @@ def backup(sp):
 
     print("Backup complete!")
     print("* Your liked songs were backed up")
+    print("* Your followed artists were backed up")
+    print("* Your saved albums were backed up")
     print("* The following playlists were backed up:")
 
     for i, playlist in enumerate(playlists):

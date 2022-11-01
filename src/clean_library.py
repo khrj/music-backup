@@ -1,4 +1,4 @@
-from backup import get_liked_songs, get_playlists, get_albums
+from backup import get_followed_artists, get_liked_songs, get_playlists, get_albums
 
 
 def clean_library(sp):
@@ -17,3 +17,9 @@ def clean_library(sp):
     playlists = get_playlists(sp)
     for playlist in playlists:
         sp.current_user_unfollow_playlist(playlist["id"])
+
+    followed = get_followed_artists(sp)
+    ids = [item["id"] for item in followed]
+    batches = [ids[i : i + 50] for i in range(0, len(ids), 50)]
+    for batch in batches:
+        sp.user_unfollow_artists(batch)

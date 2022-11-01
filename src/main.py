@@ -17,6 +17,8 @@ scope = " ".join(
         "playlist-read-collaborative",
         "playlist-modify-private",
         "playlist-modify-public",
+        "user-follow-read",
+        "user-follow-modify",
     ]
 )
 
@@ -58,7 +60,7 @@ elif choice == "3":
     restore(sp, False)
 elif choice == "4":
     confirm = input(
-        f"This will delete ALL songs in the library of {sp.me()['display_name']}. Are you sure you want to continue? [y/n] "
+        f"[{sp.me()['display_name'].upper()}] This will delete everything in your library, including liked songs, playlists, albums and followed artists. Are you sure you want to continue? [y/n] "
     )
     if confirm == "y":
         clean_library(sp)

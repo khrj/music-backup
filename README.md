@@ -10,6 +10,7 @@ Features:
 -   Backs up playlists (followed, collaborative and created)
     -   Re-follows playlists on restore
     -   Recreates collaborative and created playlists
+-   Backs up followed artists
 
 > Note: Until spotify approves an application for this app's client ID, you will
 > have to use your own client ID, which you can generate by going to
@@ -35,12 +36,17 @@ poetry run python src/main.py
 > **Quick restore causes liked songs to lose order. Playlists are always ordered
 > correctly.**
 
--   Backup: 1 second for every ~120 songs
--   Restore: 1 second per liked song, 1 second for every ~120 songs within
-    playlists
--   Quick restore: 1 second for every ~120 songs
--   Clean library: 1 second for every ~120 liked songs, 1 second for every 2-3
-    playlists
+(Times given are estimates)
+
+| Operation     | Liked Songs | Playlists       | Albums       | Arists        |
+| ------------- | ----------- | --------------- | ------------ | ------------- |
+| Backup        | 120 songs/s | 120 songs/s     | 120 albums/s | 120 artists/s |
+| Restore       | 1 song/s    | 120 songs/s     | 120 albums/s | 120 artists/s |
+| Quick Restore | 120 songs/s | 120 songs/s     | 120 albums/s | 120 artists/s |
+| Clean Library | 120 songs/s | 2.5 playlists/s | 120 albums/s | 120 artists/s |
+
+The total time taken to perform any of these operations is the sum of each type
+of item in your library divided by its respective speed
 
 ## Backwards compatibility
 

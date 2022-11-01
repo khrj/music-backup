@@ -4,6 +4,7 @@ from time import sleep
 
 
 def restore(sp, quick=False):
+    print(f"Restoring liked songs...")
     liked_songs = load(open("backup/liked-songs.json", "r"))
     ids = [item["id"] for item in reversed(liked_songs)]
 
@@ -13,10 +14,11 @@ def restore(sp, quick=False):
             sp.current_user_saved_tracks_add(batch)
     else:
         for i, song_id in enumerate(ids):
-            print(f"Restoring song: {i + 1} of {len(ids) + 1}")
+            print(f"Restoring song: {i + 1} of {len(ids)}")
             sp.current_user_saved_tracks_add([song_id])
             sleep(1)
 
+    print(f"Restoring playlists...")
     playlists = (
         [
             load(open(f"backup/playlists/owned/{playlist}", "r"))
@@ -55,6 +57,7 @@ def restore(sp, quick=False):
             for batch in batches:
                 sp.user_playlist_add_tracks(user_id, new_playlist["id"], batch)
 
+    print(f"Restoring saved albums...")
     saved_albums = load(open("backup/saved-albums.json", "r"))
 
     ids = [item["id"] for item in saved_albums]
@@ -62,3 +65,12 @@ def restore(sp, quick=False):
 
     for batch in batches:
         sp.current_user_saved_albums_add(batch)
+
+    print(f"Restoring artists...")
+    followed = load(open("backup/followed-artists.json", "r"))
+
+    ids = [item["id"] for item in followed]
+    batches = [ids[i : i + 50] for i in range(0, len(ids), 50)]
+
+    for batch in batches:
+        sp.user_follow_artists(batch)
