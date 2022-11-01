@@ -4,8 +4,10 @@ Backup spotify liked songs and playlists to transfer them to a different account
 
 Features:
 
--   Keeps order of liked songs
--   Backs up followed, collaborative and created playlists
+-   Backs up liked songs
+    -   Keeps order of liked songs
+-   Backs up albums
+-   Backs up playlists (followed, collaborative and created)
     -   Re-follows playlists on restore
     -   Recreates collaborative and created playlists
 

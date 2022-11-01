@@ -5,7 +5,6 @@ from spotipy.oauth2 import SpotifyPKCE
 
 from backup import backup
 from clean_library import clean_library
-from quick_restore import quick_restore
 from restore import restore
 
 client_id = "d93f79db5bbb41999a52734b9c95585a"
@@ -54,9 +53,9 @@ Note that while quick restore loses order for liked songs, playlists are always 
 if choice == "1":
     backup(sp)
 elif choice == "2":
-    quick_restore(sp)
+    restore(sp, True)
 elif choice == "3":
-    restore(sp)
+    restore(sp, False)
 elif choice == "4":
     confirm = input(
         f"This will delete ALL songs in the library of {sp.me()['display_name']}. Are you sure you want to continue? [y/n] "

@@ -51,6 +51,19 @@ def get_useful_info_for_playlists(playlists, owner_id):
     return cleaned
 
 
+def get_useful_info_for_albums(albums):
+    return [
+        {
+            "name": album["album"]["name"],
+            "artists": [artist["name"] for artist in album["album"]["artists"]],
+            "id": album["album"]["id"],
+            "upc": album["album"]["external_ids"]["upc"],
+            "added_at": album["added_at"],
+        }
+        for album in albums
+    ]
+
+
 def get_all_items(sp, results):
     items = results["items"]
 
@@ -69,6 +82,11 @@ def get_liked_songs(sp):
 def get_playlists(sp):
     playlists = get_all_items(sp, sp.current_user_playlists(limit=50))
     return get_useful_info_for_playlists(playlists, sp.me()["id"])
+
+
+def get_albums(sp):
+    albums = get_all_items(sp, sp.current_user_saved_albums(limit=50))
+    return get_useful_info_for_albums(albums)
 
 
 def get_playlist_tracks(sp, playlist):
@@ -94,8 +112,11 @@ def backup(sp):
     Path("backup/playlists/followed").mkdir(parents=True, exist_ok=True)
 
     songs = get_liked_songs(sp)
+    albums = get_albums(sp)
     playlists = get_playlists(sp)
 
+    dump(songs, open("backup/liked-songs.json", "w"))
+    dump(albums, open("backup/saved-albums.json", "w"))
     for playlist in playlists:
         playlist["tracks"] = get_playlist_tracks(sp, playlist)
         dump(
@@ -105,8 +126,6 @@ def backup(sp):
                 "w",
             ),
         )
-
-    dump(songs, open("backup/liked-songs.json", "w"))
 
     print("Backup complete!")
     print("* Your liked songs were backed up")

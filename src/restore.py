@@ -3,15 +3,19 @@ from os import listdir
 from time import sleep
 
 
-def restore(sp):
-    backup = load(open("backup/liked-songs.json", "r"))
+def restore(sp, quick=False):
+    liked_songs = load(open("backup/liked-songs.json", "r"))
+    ids = [item["id"] for item in reversed(liked_songs)]
 
-    ids = [item["id"] for item in reversed(backup)]
-
-    for i, song_id in enumerate(ids):
-        print(f"Restoring song: {i + 1} of {len(ids) + 1}")
-        sp.current_user_saved_tracks_add([song_id])
-        sleep(1)
+    if quick:
+        batches = [ids[i : i + 50] for i in range(0, len(ids), 50)]
+        for batch in batches:
+            sp.current_user_saved_tracks_add(batch)
+    else:
+        for i, song_id in enumerate(ids):
+            print(f"Restoring song: {i + 1} of {len(ids) + 1}")
+            sp.current_user_saved_tracks_add([song_id])
+            sleep(1)
 
     playlists = (
         [
@@ -51,3 +55,10 @@ def restore(sp):
             for batch in batches:
                 sp.user_playlist_add_tracks(user_id, new_playlist["id"], batch)
 
+    saved_albums = load(open("backup/saved-albums.json", "r"))
+
+    ids = [item["id"] for item in saved_albums]
+    batches = [ids[i : i + 50] for i in range(0, len(ids), 50)]
+
+    for batch in batches:
+        sp.current_user_saved_albums_add(batch)
