@@ -74,11 +74,12 @@ def get_useful_info_for_followed(artists):
     ]
 
 
-def get_all_items(sp, results):
+def get_all_items(sp, results, key=None):
     items = results["items"]
 
     while results["next"]:
         results = sp.next(results)
+        if key: results = results[key]
         items.extend(results["items"])
 
     return items
@@ -100,7 +101,7 @@ def get_albums(sp):
 
 
 def get_followed_artists(sp):
-    artists = get_all_items(sp, sp.current_user_followed_artists(limit=50)["artists"])
+    artists = get_all_items(sp, sp.current_user_followed_artists(limit=50)["artists"], "artists")
     return get_useful_info_for_followed(artists)
 
 
