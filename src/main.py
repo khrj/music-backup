@@ -1,8 +1,8 @@
 import os
-
 import spotipy
-from spotipy.oauth2 import SpotifyPKCE
+import argparse
 
+from spotipy.oauth2 import SpotifyPKCE
 from backup import backup
 from clean_library import clean_library
 from restore import restore
@@ -31,7 +31,11 @@ sp = spotipy.Spotify(
     )
 )
 
-choice = input(f"Logged in as {sp.me()['display_name']}. Continue? [y/n/logout] ")
+parser = argparse.ArgumentParser(description="Backup and restore spotify library")
+parser.add_argument('--backup', action='store_true')
+args = parser.parse_args()
+
+choice = "y" if args.backup else input(f"Logged in as {sp.me()['display_name']}. Continue? [y/n/logout] ")
 if choice == "y":
     pass
 elif choice == "logout":
@@ -40,7 +44,8 @@ elif choice == "logout":
 else:
     quit()
 
-choice = input(
+
+choice = "1" if args.backup else input(
     """What would you like to do? Available:
 1. Backup
 2. Quick restore (doesn't preserve order of liked songs)

@@ -34,6 +34,12 @@ Then run:
 poetry run python src/main.py
 ```
 
+To automatically backup (in a script, on a schedule...):
+
+```bash
+poetry run python src/main.py --backup
+```
+
 ## Time taken
 
 > **Quick restore causes liked songs to lose order. Playlists are always ordered
