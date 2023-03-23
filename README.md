@@ -11,6 +11,9 @@ Features:
     -   Re-follows playlists on restore
     -   Recreates collaborative and created playlists
 -   Backs up followed artists
+-   Backs up list of people in your blends
+    - CAVEAT: Blends with more than a ceratin amount of people will only have "X others" instead of all member names
+- **Maintains a git repository of your songs at backup/. Can optionally push to a remote**
 
 > Note: Until spotify approves an application for this app's client ID, you will
 > have to use your own client ID, which you can generate by going to
