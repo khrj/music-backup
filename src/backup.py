@@ -157,6 +157,8 @@ def backup(sp: Spotify):
         print("You have uncommitted changes in backup/, exiting")
         exit(1)
 
+    subprocess.run(["git", "pull"], cwd=backup).check_returncode()
+
     rmtree("backup/playlists", ignore_errors=True)
     Path("backup/liked-songs.json").unlink(missing_ok=True)
     Path("backup/saved-albums.json").unlink(missing_ok=True)
