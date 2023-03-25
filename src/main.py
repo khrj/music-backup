@@ -22,14 +22,16 @@ scope = " ".join(
     ]
 )
 
-
-sp = spotipy.Spotify(
-    auth_manager=SpotifyPKCE(
-        scope=scope,
-        client_id=client_id,
-        redirect_uri=redirect_uri,
-    )
+auth_manager = SpotifyPKCE(
+    scope=scope,
+    client_id=client_id,
+    redirect_uri=redirect_uri,
 )
+
+if not auth_manager.validate_token(auth_manager.get_cached_token()):
+    print("If your browser doesn't open automatically, open", auth_manager.get_authorize_url())
+
+sp = spotipy.Spotify(auth_manager=auth_manager)
 
 parser = argparse.ArgumentParser(description="Backup and restore spotify library")
 parser.add_argument('--backup', action='store_true')
