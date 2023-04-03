@@ -100,13 +100,25 @@ def get_all_items(sp: Spotify, results, key=None):
 
 
 def get_liked_songs(sp: Spotify):
-    songs = get_all_items(sp, sp.current_user_saved_tracks(limit=50))
-    return get_useful_info_for_tracks(songs)
+    results = sp.current_user_saved_tracks(limit=50)
+    items = results["items"]
+
+    while len(results["items"]) > 0:
+        results = sp.current_user_saved_tracks(limit=50, offset=results["offset"] + 50)
+        items.extend(results["items"])
+
+    return get_useful_info_for_tracks(items)
 
 
 def get_playlists(sp: Spotify):
-    playlists = get_all_items(sp, sp.current_user_playlists(limit=50))
-    return get_useful_info_for_playlists(playlists, sp.me()["id"])
+    results = sp.current_user_playlists(limit=50)
+    items = results["items"]
+
+    while len(results["items"]) > 0:
+        results = sp.current_user_playlists(limit=50, offset=results["offset"] + 50)
+        items.extend(results["items"])
+
+    return get_useful_info_for_playlists(items, sp.me()["id"])
 
 
 def get_albums(sp: Spotify):
@@ -122,8 +134,16 @@ def get_followed_artists(sp: Spotify):
 
 
 def get_playlist_tracks(sp: Spotify, playlist):
-    tracks = get_all_items(sp, sp.playlist_tracks(playlist["id"], limit=50))
-    return get_useful_info_for_tracks(tracks)
+    results = sp.playlist_tracks(playlist["id"], limit=50)
+    items = results["items"]
+
+    while len(results["items"]) > 0:
+        results = sp.playlist_tracks(
+            playlist["id"], limit=50, offset=results["offset"] + 50
+        )
+        items.extend(results["items"])
+
+    return get_useful_info_for_tracks(items)
 
 
 def slugify(value):
@@ -187,7 +207,7 @@ def backup(sp: Spotify):
         playlist["tracks"] = get_playlist_tracks(sp, playlist)
         write(
             playlist,
-            f"backup/playlists/{playlist['type']}/{slugify(playlist['name'])}.json",
+            f"backup/playlists/{playlist['type']}/{slugify(playlist['name'])}-{slugify(playlist['id'])}.json",
         )
 
     write(blends, "backup/blend-names.json")
