@@ -161,81 +161,87 @@ def write(data, path):
     dump(data, open(path, "w"), indent="\t")
 
 
-def backup(sp: Spotify):
+def backup(sp: Spotify, playlist_name=None):
     print("Backing up... This might take a while")
 
     backup = Path("backup")
     backup.mkdir(parents=True, exist_ok=True)
 
-    git_status = subprocess.run(
-        ["git", "status", "--porcelain"], cwd=backup, capture_output=True, text=True
-    )
+    if not playlist_name:
+        git_status = subprocess.run(
+            ["git", "status", "--porcelain"], cwd=backup, capture_output=True, text=True
+        )
 
-    if git_status.returncode != 0:
-        subprocess.run(["git", "init"], cwd=backup).check_returncode()
+        if git_status.returncode != 0:
+            subprocess.run(["git", "init"], cwd=backup).check_returncode()
 
-    if git_status.stdout:
-        print("You have uncommitted changes in backup/, exiting")
-        exit(1)
+        if git_status.stdout:
+            print("You have uncommitted changes in backup/, exiting")
+            exit(1)
 
-    subprocess.run(["git", "pull"], cwd=backup).check_returncode()
+        subprocess.run(["git", "pull"], cwd=backup).check_returncode()
 
-    rmtree("backup/playlists", ignore_errors=True)
-    Path("backup/liked-songs.json").unlink(missing_ok=True)
-    Path("backup/saved-albums.json").unlink(missing_ok=True)
-    Path("backup/followed-artists.json").unlink(missing_ok=True)
-    Path("backup/blend-names.json").unlink(missing_ok=True)
+        rmtree("backup/playlists", ignore_errors=True)
+        Path("backup/liked-songs.json").unlink(missing_ok=True)
+        Path("backup/saved-albums.json").unlink(missing_ok=True)
+        Path("backup/followed-artists.json").unlink(missing_ok=True)
+        Path("backup/blend-names.json").unlink(missing_ok=True)
 
     Path("backup/playlists/owned").mkdir(parents=True, exist_ok=True)
     Path("backup/playlists/collaborative").mkdir(parents=True, exist_ok=True)
     Path("backup/playlists/followed").mkdir(parents=True, exist_ok=True)
 
-    print("Backing up liked songs...")
-    songs = get_liked_songs(sp)
-    write(songs, "backup/liked-songs.json")
+    if not playlist_name:
+        print("Backing up liked songs...")
+        songs = get_liked_songs(sp)
+        write(songs, "backup/liked-songs.json")
 
-    print("Backing up albums...")
-    albums = get_albums(sp)
-    write(albums, "backup/saved-albums.json")
+        print("Backing up albums...")
+        albums = get_albums(sp)
+        write(albums, "backup/saved-albums.json")
 
-    print("Backing up followed artists...")
-    followed = get_followed_artists(sp)
-    write(followed, "backup/followed-artists.json")
+        print("Backing up followed artists...")
+        followed = get_followed_artists(sp)
+        write(followed, "backup/followed-artists.json")
 
     print("Backing up playlists...")
     playlists, blends = get_playlists(sp)
     for playlist in playlists:
+        if playlist_name and playlist["name"] != playlist_name:
+            continue
+
         playlist["tracks"] = get_playlist_tracks(sp, playlist)
         write(
             playlist,
             f"backup/playlists/{playlist['type']}/{slugify(playlist['name'])}-{slugify(playlist['id'])}.json",
         )
 
-    write(blends, "backup/blend-names.json")
+    if not playlist_name:
+        write(blends, "backup/blend-names.json")
 
-    print("Commiting and pushing changes...")
+        print("Commiting and pushing changes...")
 
-    subprocess.run(["git", "add", "."], cwd=backup).check_returncode()
+        subprocess.run(["git", "add", "."], cwd=backup).check_returncode()
 
-    subprocess.run(
-        "git diff-index --quiet HEAD || git commit -m 'Automated update'",
-        cwd=backup,
-        shell=True,
-    ).check_returncode()
+        subprocess.run(
+            "git diff-index --quiet HEAD || git commit -m 'Automated update'",
+            cwd=backup,
+            shell=True,
+        ).check_returncode()
 
-    subprocess.run(["git", "push"], cwd=backup)
+        subprocess.run(["git", "push"], cwd=backup)
 
-    print("Backup complete!")
-    print("* Your liked songs were backed up")
-    print("* Your followed artists were backed up")
-    print("* Your saved albums were backed up")
-    print("* Names of people in blends were backed up (excluding large blends)")
-    print("* The following playlists were backed up:")
+        print("Backup complete!")
+        print("* Your liked songs were backed up")
+        print("* Your followed artists were backed up")
+        print("* Your saved albums were backed up")
+        print("* Names of people in blends were backed up (excluding large blends)")
+        print("* The following playlists were backed up:")
 
-    print(
-        tabulate(
-            [[x["name"], x["type"]] for x in playlists],
-            headers=["Name", "Type"],
-            showindex=range(1, len(playlists) + 1),
+        print(
+            tabulate(
+                [[x["name"], x["type"]] for x in playlists],
+                headers=["Name", "Type"],
+                showindex=range(1, len(playlists) + 1),
+            )
         )
-    )

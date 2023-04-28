@@ -40,6 +40,19 @@ To automatically backup (in a script, on a schedule...):
 poetry run python src/main.py --backup
 ```
 
+To get only a specific playlist
+
+```bash
+poetry run python src/main.py --backup --playlist <name of playlist>
+```
+
+To get decade-distribution for any file
+
+```bash
+poetry run python src/main.py --file <path to file>
+```
+
+
 ## Time taken
 
 > **Quick restore causes liked songs to lose order. Playlists are always ordered
