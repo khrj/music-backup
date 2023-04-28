@@ -14,6 +14,7 @@ def get_useful_info_for_tracks(tracks):
         {
             "name": item["track"]["name"],
             "artists": [artist["name"] for artist in item["track"]["artists"]],
+            "release_date": item["track"]["album"]["release_date"],
             "id": item["track"]["id"],
             "isrc": item["track"]["external_ids"].get("isrc"),
             "added_at": item["added_at"],
