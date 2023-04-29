@@ -1,10 +1,19 @@
 from json import load
+from io import BytesIO
+from pathlib import Path
+
+from pygal import Pie
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPM
+from backup import slugify
 
 
 def analyze(file_path):
     raw_data = load(open(file_path, "r"))
+    name = raw_data["name"] if "tracks" in raw_data else "Liked Songs"
     if "tracks" in raw_data:
         raw_data = raw_data["tracks"]
+
 
     tracks = sorted(
         [
@@ -28,7 +37,13 @@ def analyze(file_path):
 
     print(by_decade)
 
+    pie_chart = Pie(print_values=True)
+    pie_chart.title = f'Decade distribution for "{name}"'
 
-# import matplotlib.pyplot as plt
-# plt.pie(data.values(), labels=data.keys())
-# plt.show()
+    for year, count in by_decade.items():
+        pie_chart.add(year, count)
+
+    Path("outputs").mkdir(parents=True, exist_ok=True)
+    renderPM.drawToFile(
+        svg2rlg(BytesIO(pie_chart.render())), f"outputs/{slugify(name)}.png", fmt="PNG"
+    )
