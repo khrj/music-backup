@@ -8,3 +8,5 @@ __pycache__
 backup
 
 outputs/
+generate.sh
+

@@ -14,7 +14,6 @@ def analyze(file_path):
     if "tracks" in raw_data:
         raw_data = raw_data["tracks"]
 
-
     tracks = sorted(
         [
             int(x["release_date"].split("-")[0])
@@ -24,6 +23,7 @@ def analyze(file_path):
     )
 
     by_decade = {}
+    avg = sum(tracks) / len(tracks)
 
     for t in tracks:
         decade = str(t)[:-1] + "0s"
@@ -36,9 +36,10 @@ def analyze(file_path):
             print(t)
 
     print(by_decade)
+    print(avg)
 
     pie_chart = Pie(print_values=True)
-    pie_chart.title = f'Decade distribution for "{name}"'
+    pie_chart.title = f'Decade distribution for "{name}" [Average: {avg:.2f}]'
 
     for year, count in by_decade.items():
         pie_chart.add(year, count)
