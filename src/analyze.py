@@ -1,6 +1,7 @@
 from json import load
 from io import BytesIO
 from pathlib import Path
+from statistics import mean, median, mode, variance, stdev
 
 from pygal import Pie
 from svglib.svglib import svg2rlg
@@ -23,7 +24,6 @@ def analyze(file_path):
     )
 
     by_decade = {}
-    avg = sum(tracks) / len(tracks)
 
     for t in tracks:
         decade = str(t)[:-1] + "0s"
@@ -35,11 +35,20 @@ def analyze(file_path):
         if decade == "0s":
             print(t)
 
+    print(f"{name}:")
     print(by_decade)
-    print(avg)
+    print()
+    print(f"Mean: {mean(tracks)}")
+    print(f"Median: {median(tracks)}")
+    print(f"Mode: {mode(tracks)}")
+    print(f"Variance: {variance(tracks)}")
+    print(f"Standard Deviation: {stdev(tracks)}")
+    print()
+    print()
+    print()
 
     pie_chart = Pie(print_values=True)
-    pie_chart.title = f'Decade distribution for "{name}" [Average: {avg:.2f}]'
+    pie_chart.title = f'Decade distribution for "{name}" [Average: {mean(tracks):.2f}]'
 
     for year, count in by_decade.items():
         pie_chart.add(year, count)
