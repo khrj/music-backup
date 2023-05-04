@@ -19,7 +19,7 @@ def analyze(file_path):
         [
             int(x["release_date"].split("-")[0])
             for x in raw_data
-            if x["release_date"] != "0000"
+            if x["release_date"] and x["release_date"] != "0000"
         ]
     )
 
