@@ -1,6 +1,6 @@
-# Spotify backup
+# Music backup
 
-Backup spotify liked songs and playlists to transfer them to a different account
+Backup playlists and liked songs from Spotify
 
 Features:
 
