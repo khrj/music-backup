@@ -29,7 +29,7 @@ def get_useful_info_for_playlists(playlists, owner_id):
     blends = []
 
     for playlist in playlists:
-        if playlist["description"].startswith("A blend of music for"):
+        if playlist["description"].lower().strip().startswith("a blend of music for"):
             blends.append(playlist["name"].split(" + "))
             continue
 

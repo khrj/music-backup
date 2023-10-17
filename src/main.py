@@ -78,7 +78,7 @@ choice = (
 
 Note that while quick restore loses order for liked songs, playlists are always ordered correctly.
 
-[1/2/3/4/q]: """
+[1/2/3/4/5/6/q]: """
     )
 )
 
