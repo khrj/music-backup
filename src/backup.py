@@ -119,7 +119,9 @@ def get_playlists(sp: Spotify):
         results = sp.current_user_playlists(limit=50, offset=results["offset"] + 50)
         items.extend(results["items"])
 
-    return get_useful_info_for_playlists(items, sp.me()["id"])
+    return get_useful_info_for_playlists(
+        [item for item in items if item is not None], sp.me()["id"]
+    )
 
 
 def get_albums(sp: Spotify):
